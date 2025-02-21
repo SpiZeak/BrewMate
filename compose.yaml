@@ -1,6 +1,7 @@
 services:
   mysql:
     image: 'mysql:latest'
+    container_name: 'brewmate-mysql'
     environment:
       - 'MYSQL_DATABASE=mydatabase'
       - 'MYSQL_PASSWORD=secret'
@@ -11,6 +12,7 @@ services:
 
   spring:
     build: .
+    container_name: 'brewmate-spring'
     depends_on:
       - mysql
     ports:
@@ -22,5 +24,6 @@ services:
 
   adminer:
     image: 'adminer:latest'
+    container_name: 'brewmate-adminer'
     ports:
       - '8080:8080'
