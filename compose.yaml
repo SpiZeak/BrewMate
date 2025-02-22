@@ -1,7 +1,7 @@
 services:
-  mysql:
-    image: 'mysql:latest'
-    container_name: 'brewmate-mysql'
+  database:
+    image: 'mysql:innovation'
+    container_name: 'brewmate-database'
     environment:
       - 'MYSQL_DATABASE=mydatabase'
       - 'MYSQL_PASSWORD=secret'
@@ -10,20 +10,32 @@ services:
     ports:
       - '3306:3306'
 
-  spring:
-    build: .
-    container_name: 'brewmate-spring'
+  backend:
+    build: ./backend
+    container_name: 'brewmate-backend'
     depends_on:
-      - mysql
+      - database
     ports:
       - '8081:8081'
     environment:
-      - 'SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/mydatabase'
+      - 'SPRING_DATASOURCE_URL=jdbc:mysql://database:3306/mydatabase'
       - 'SPRING_DATASOURCE_USERNAME=myuser'
       - 'SPRING_DATASOURCE_PASSWORD=secret'
+
+  frontend:
+    build: ./frontend
+    container_name: 'brewmate-frontend'
+    depends_on:
+      - backend
+    ports:
+      - '5173:5173'
+    volumes:
+      - './frontend:/app'
 
   adminer:
     image: 'adminer:latest'
     container_name: 'brewmate-adminer'
     ports:
       - '8080:8080'
+    depends_on:
+      - database
