@@ -4,6 +4,7 @@ import { ReactNode } from 'react';
 
 const AppShell = lazy(() => import('../components/AppShell'));
 const Home = lazy(() => import('../pages/Home'));
+const Login = lazy(() => import('../pages/Login'));
 const ErrorBoundary = ({ children }: { children: ReactNode }) => {
   try {
     return children;
@@ -19,7 +20,7 @@ const AppRouter = () => (
         <Routes>
           <Route path='/' element={<AppShell />}>
             <Route index element={<Home />} />
-            <Route path='login' element={<h1>Login</h1>} />
+            <Route path='login' element={<Login />} />
           </Route>
         </Routes>
       </Suspense>
