@@ -8,6 +8,7 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import store from './store';
 import AppRouter from './router';
+import ThemeProvider from '@components/ThemeProvider';
 
 const root = document.getElementById('root');
 
@@ -18,7 +19,9 @@ if (!root) {
 createRoot(root).render(
   <StrictMode>
     <Provider store={store}>
-      <AppRouter />
+      <ThemeProvider>
+        <AppRouter />
+      </ThemeProvider>
     </Provider>
   </StrictMode>
 );
