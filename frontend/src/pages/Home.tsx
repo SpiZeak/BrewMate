@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@app/store';
 import Button from '@mui/material/Button';
 
-function Home() {
+const Home = () => {
   const count = useSelector((state: RootState) => state.counter.value);
   const dispatch = useDispatch();
 
@@ -15,6 +15,6 @@ function Home() {
       </Button>
     </>
   );
-}
+};
 
 export default Home;

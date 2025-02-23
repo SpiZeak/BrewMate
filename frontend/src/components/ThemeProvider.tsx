@@ -15,13 +15,13 @@ interface ThemeProviderProps {
   children: ReactNode;
 }
 
-function ThemeProvider({ children }: ThemeProviderProps) {
+const ThemeProvider = ({ children }: ThemeProviderProps) => {
   return (
     <MuiThemeProvider theme={darkTheme}>
       <CssBaseline />
       {children}
     </MuiThemeProvider>
   );
-}
+};
 
 export default ThemeProvider;

@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { Outlet, useNavigate } from 'react-router';
 import HouseIcon from '@mui/icons-material/House';
 
-function AppShell() {
+const AppShell = () => {
   const navigate = useNavigate();
   const [value, setValue] = useState('/');
 
@@ -27,6 +27,6 @@ function AppShell() {
       </BottomNavigation>
     </>
   );
-}
+};
 
 export default AppShell;
