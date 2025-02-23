@@ -4,6 +4,7 @@ import {
   createTheme,
 } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+import { StyledEngineProvider } from '@mui/material/styles';
 
 const darkTheme = createTheme({
   palette: {
@@ -17,10 +18,12 @@ interface ThemeProviderProps {
 
 const ThemeProvider = ({ children }: ThemeProviderProps) => {
   return (
-    <MuiThemeProvider theme={darkTheme}>
-      <CssBaseline />
-      {children}
-    </MuiThemeProvider>
+    <StyledEngineProvider injectFirst>
+      <MuiThemeProvider theme={darkTheme}>
+        <CssBaseline />
+        {children}
+      </MuiThemeProvider>
+    </StyledEngineProvider>
   );
 };
 
