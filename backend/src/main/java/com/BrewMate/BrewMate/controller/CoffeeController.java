@@ -1,6 +1,5 @@
 package com.BrewMate.BrewMate.controller;
 
-
 import com.BrewMate.BrewMate.model.Coffee;
 import com.BrewMate.BrewMate.service.CoffeeService;
 import org.springframework.http.ResponseEntity;
@@ -18,14 +17,32 @@ public class CoffeeController {
         this.coffeeService = coffeeService;
     }
 
-    @PostMapping
-    public ResponseEntity<Coffee> addCoffee(@RequestBody Coffee coffee) {
-        Coffee newCoffee = coffeeService.addCoffee(coffee);
-        return ResponseEntity.ok(newCoffee);
-    }
-
     @GetMapping
     public ResponseEntity<List<Coffee>> getAllCoffees() {
-        return ResponseEntity.ok(coffeeService.getAllCoffees());
+        List<Coffee> coffees = coffeeService.getAllCoffees();
+        return ResponseEntity.ok(coffees);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Coffee> getCoffeeById(@PathVariable Long id) {
+        return coffeeService.getCoffeeById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping
+    public ResponseEntity<Coffee> addCoffee(@RequestBody Coffee coffee) {
+        Coffee createdCoffee = coffeeService.addCoffee(coffee);
+        return ResponseEntity.ok(createdCoffee);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCoffee(@PathVariable Long id) {
+        if (coffeeService.getCoffeeById(id).isPresent()) {
+            coffeeService.deleteCoffee(id);
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
