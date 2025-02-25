@@ -5,22 +5,36 @@ import com.BrewMate.BrewMate.repository.CoffeeRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
-//The service layer will handle the business logic.
 @Service
 public class CoffeeService {
 
+    // This repository handles all database operations for Coffee
     private final CoffeeRepository coffeeRepository;
 
-    public CoffeeService(CoffeeRepository coffeeRepository){
+    // Constructor to inject the CoffeeRepository
+    public CoffeeService(CoffeeRepository coffeeRepository) {
         this.coffeeRepository = coffeeRepository;
     }
 
-    public Coffee addCoffee(Coffee coffee){
+    // Returns a list of all coffees
+    public List<Coffee> getAllCoffees() {
+        return coffeeRepository.findAll();
+    }
+
+    // Finds a coffee by its id
+    public Optional<Coffee> getCoffeeById(Long id) {
+        return coffeeRepository.findById(id);
+    }
+
+    // Saves a new coffee to the database
+    public Coffee addCoffee(Coffee coffee) {
         return coffeeRepository.save(coffee);
     }
 
-    public List<Coffee> getAllCoffees() {
-        return coffeeRepository.findAll();
+    // Deletes a coffee by its id
+    public void deleteCoffee(Long id) {
+        coffeeRepository.deleteById(id);
     }
 }
