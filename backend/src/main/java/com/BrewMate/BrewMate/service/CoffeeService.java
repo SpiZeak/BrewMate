@@ -37,4 +37,9 @@ public class CoffeeService {
     public void deleteCoffee(Long id) {
         coffeeRepository.deleteById(id);
     }
+
+//    Retrieve coffees filtered by brewing style
+    public List<Coffee> getCoffeesByBrewingStyle(String brewStyle){
+        return coffeeRepository.findByBrewingStyle(brewStyle);
+    }
 }
