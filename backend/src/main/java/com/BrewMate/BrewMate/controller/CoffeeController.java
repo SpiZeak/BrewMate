@@ -18,8 +18,18 @@ public class CoffeeController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Coffee>> getAllCoffees() {
-        List<Coffee> coffees = coffeeService.getAllCoffees();
+    public ResponseEntity<List<Coffee>> getAllCoffees(
+            @RequestParam(value = "brewstyle", required = false) String brewstyle) {
+        List<Coffee> coffees;
+//      If brewstyle parameter is provided, filter by brewStyle; otherwise, return all coffees
+        if (brewstyle != null && !brewstyle.isEmpty()){
+            coffees = coffeeService.getCoffeesByBrewingStyle(brewstyle);
+        } else{
+            coffees = coffeeService.getAllCoffees();
+        }
+        if (coffees.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
         return ResponseEntity.ok(coffees);
     }
 
