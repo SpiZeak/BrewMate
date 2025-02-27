@@ -5,8 +5,12 @@ import org.springframework.stereotype.Repository;
 
 import com.BrewMate.BrewMate.model.User;
 
+import java.util.Optional;
+
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+//    Find users by userID
+    Optional<User> findByUserId(String userID);
 }
 
 
