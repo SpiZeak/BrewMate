@@ -27,6 +27,10 @@ public class Coffee {
     // OPTIONAL See snapchat for more info
     // private String guideImage;
 
+//    Added brewingStyle so that we can categorize coffees by Italian, American, Australian as example.
+    @Column(nullable = false)
+    private String brewingStyle;
+
 
     public Coffee() {}
     public Coffee(String name, int espressoRatio, int milkRatio, int foamRatio, int waterRatio) {
@@ -81,6 +85,15 @@ public class Coffee {
 
     public void setWaterRatio(int waterRatio) {
         this.waterRatio = waterRatio;
+    }
+
+
+    public String getBrewingStyle(){
+        return brewingStyle;
+    }
+
+    public void setBrewingStyle(String brewingStyle) {
+        this.brewingStyle = brewingStyle;
     }
 
     // OPTIONAL See snapchat for more info
