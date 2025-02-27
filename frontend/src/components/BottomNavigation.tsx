@@ -5,6 +5,7 @@ import LoginIcon from '@mui/icons-material/Login';
 import HouseIcon from '@mui/icons-material/House';
 import Paper from '@mui/material/Paper';
 import { useLocation, useNavigate } from 'react-router';
+import Avatar from './Avatar';
 
 const BottomNavigation = () => {
   const location = useLocation();
@@ -26,6 +27,13 @@ const BottomNavigation = () => {
           value='/login'
           icon={<LoginIcon />}
         />
+        {false && (
+          <BottomNavigationAction
+            label='Profile'
+            value='/profile'
+            icon={<Avatar />}
+          />
+        )}
       </MuiBottomNavigation>
     </Paper>
   );
