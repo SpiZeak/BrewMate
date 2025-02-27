@@ -13,14 +13,14 @@ public class User {
     private Long id;
 
     @Column(unique = true, nullable = true, length = 8) // Unique 8-character identifier (not auto-incremented)
-    private String userID;
+    private String userId;
 
     private String name;
     private String email;
 
     // assign unique userID
     public User() {
-        this.userID = generateRandomUserID();
+        this.userId = generateRandomUserID();
     }
 
     // Getters and setters
@@ -33,11 +33,11 @@ public class User {
     }
 
     public String getUserID() {
-        return userID;
+        return userId;
     }
 
     public void setUserID(String userID) {
-        this.userID = userID;
+        this.userId = userID;
     }
 
     public String getName() {
