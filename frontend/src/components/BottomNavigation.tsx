@@ -24,7 +24,7 @@ const BottomNavigation = () => {
         <BottomNavigationAction label='Home' value='/' icon={<HouseIcon />} />
         <BottomNavigationAction
           label='Login'
-          value='/login'
+          value='/auth'
           icon={<LoginIcon />}
         />
         {false && (
