@@ -18,6 +18,11 @@ public class UserService {
 	}
 
 	public User saveUser(User user) {
+		// Ensure unique userId by regenerating if needed
+		while (userRepository.findByUserId(user.getUserID()).isPresent()) {
+			user.setUserID(User.generateUniqueUserID());
+		}
+
 		return userRepository.save(user);
 	}
 }
