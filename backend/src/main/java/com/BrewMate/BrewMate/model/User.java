@@ -1,5 +1,7 @@
 package com.BrewMate.BrewMate.model;
 
+
+
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
