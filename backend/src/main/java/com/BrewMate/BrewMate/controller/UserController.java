@@ -30,15 +30,12 @@ public class UserController {
         return ResponseEntity.ok(savedUser);
     }
 
-    /** Handles user login and sets JWTs as cookies. */
+    /** Handles user login and returns user data with JWT token. */
     @PostMapping("/auth/login")
-    public ResponseEntity<String> loginUser(@RequestParam String email, @RequestParam String password, HttpServletResponse response) {
-        Optional<String[]> tokensOptional = userService.authenticateUser(email, password);
-        if (tokensOptional.isPresent()) {
-            String[] tokens = tokensOptional.get();
-            addCookie(response, "access_token", tokens[0], 900); // 15 min
-            addCookie(response, "refresh_token", tokens[1], 604800); // 7 days
-            return ResponseEntity.ok("Logged in successfully");
+    public ResponseEntity<Object> loginUser(@RequestParam String email, @RequestParam String password) {
+        Optional<Object> userOptional = userService.authenticateUser(email, password);
+        if (userOptional.isPresent()) {
+            return ResponseEntity.ok(userOptional.get());
         } else {
             return ResponseEntity.status(401).body("Invalid email or password.");
         }
