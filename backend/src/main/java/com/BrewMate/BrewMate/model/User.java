@@ -19,7 +19,7 @@ public class User {
 
     // assign unique userID
     public User() {
-        this.userId = generateRandomUserID();
+        this.userId = generateUniqueUserID();
     }
 
     // Getters and setters
