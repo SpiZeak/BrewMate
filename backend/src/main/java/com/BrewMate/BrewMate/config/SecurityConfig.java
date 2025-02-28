@@ -1,5 +1,6 @@
 package com.BrewMate.BrewMate.config;
 
+import com.BrewMate.BrewMate.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -7,6 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -17,15 +19,21 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+
+    /** Configures security settings, allowing JWT authentication. */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(csrf -> csrf.disable()) // ✅ CSRF disabled (re-enable later for forms)
+        return http
+                .csrf(csrf -> csrf.disable()) // ✅ Disable CSRF (re-enable later if needed)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/users/register", "/users/login").permitAll() // ✅ Public access for auth
-                        .anyRequest().authenticated() // 🔒 Protect all other endpoints
-                );
-
-        return http.build();
+                        .requestMatchers("/users/auth/register", "/users/auth/login", "/users/auth/refresh").permitAll() // Public endpoints
+                        .anyRequest().authenticated() // 🔒 Require authentication for other requests
+                )
+                .addFilterBefore(new JwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class) // ✅ Validate JWT in requests
+                .build();
     }
+
+
+
+
 }

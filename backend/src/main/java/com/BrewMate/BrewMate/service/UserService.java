@@ -2,6 +2,7 @@ package com.BrewMate.BrewMate.service;
 
 import com.BrewMate.BrewMate.model.User;
 import com.BrewMate.BrewMate.repository.UserRepository;
+import com.BrewMate.BrewMate.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -33,12 +34,17 @@ public class UserService {
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		return userRepository.save(user);
 	}
-	public Optional<User> authenticateUser(String email, String password) {
+
+	/** Authenticates a user and returns JWT access & refresh tokens. */
+	public Optional<String[]> authenticateUser(String email, String password) {
 		Optional<User> userOptional = userRepository.findByEmail(email);
 		if (userOptional.isPresent()) {
 			User user = userOptional.get();
 			if (passwordEncoder.matches(password, user.getPassword())) {
-				return Optional.of(user);
+				return Optional.of(new String[]{
+						JwtUtil.generateAccessToken(email),
+						JwtUtil.generateRefreshToken(email)
+				});
 			}
 		}
 		return Optional.empty();
