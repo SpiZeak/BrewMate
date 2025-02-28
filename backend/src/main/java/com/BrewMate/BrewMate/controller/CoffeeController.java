@@ -1,5 +1,6 @@
 package com.BrewMate.BrewMate.controller;
 
+import com.BrewMate.BrewMate.dto.CoffeeDTO;
 import com.BrewMate.BrewMate.model.Coffee;
 import com.BrewMate.BrewMate.service.CoffeeService;
 import org.springframework.http.ResponseEntity;
@@ -18,32 +19,39 @@ public class CoffeeController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Coffee>> getAllCoffees(
+    public ResponseEntity<List<CoffeeDTO>> getAllCoffees(
             @RequestParam(value = "brewstyle", required = false) String brewstyle) {
         List<Coffee> coffees;
-//      If brewstyle parameter is provided, filter by brewStyle; otherwise, return all coffees
-        if (brewstyle != null && !brewstyle.isEmpty()){
+        if (brewstyle != null && !brewstyle.isEmpty()) {
             coffees = coffeeService.getCoffeesByBrewingStyle(brewstyle);
-        } else{
+        } else {
             coffees = coffeeService.getAllCoffees();
         }
-        if (coffees.isEmpty()){
+
+        if (coffees.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(coffees);
+
+        List<CoffeeDTO> coffeeDTOs = coffees.stream()
+                .map(coffeeService::convertToDTO)
+                .toList();
+
+        return ResponseEntity.ok(coffeeDTOs);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Coffee> getCoffeeById(@PathVariable Long id) {
+    public ResponseEntity<CoffeeDTO> getCoffeeById(@PathVariable Long id) {
         return coffeeService.getCoffeeById(id)
-                .map(ResponseEntity::ok)
+                .map(coffee -> ResponseEntity.ok(coffeeService.convertToDTO(coffee)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
+
     @PostMapping
-    public ResponseEntity<Coffee> addCoffee(@RequestBody Coffee coffee) {
+    public ResponseEntity<CoffeeDTO> addCoffee(@RequestBody CoffeeDTO coffeeDTO) {
+        Coffee coffee = coffeeService.convertDTOToEntity(coffeeDTO);
         Coffee createdCoffee = coffeeService.addCoffee(coffee);
-        return ResponseEntity.ok(createdCoffee);
+        return ResponseEntity.ok(coffeeService.convertToDTO(createdCoffee));
     }
 
     @DeleteMapping("/{id}")
