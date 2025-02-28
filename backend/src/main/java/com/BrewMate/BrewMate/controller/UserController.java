@@ -20,8 +20,8 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
+    @PostMapping("/auth/register")
+    public ResponseEntity<User> registerUser(@RequestBody User user) {
         User savedUser = userService.saveUser(user);
         return ResponseEntity.ok(savedUser);
     }
