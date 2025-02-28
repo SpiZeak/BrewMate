@@ -27,27 +27,45 @@ public class UserService {
 		return userRepository.findAll();
 	}
 
-	/** Saves a new user with password encoding (BCrypt). */
-	public User saveUser(User user) {
+	/** Saves a new user with password encoding (BCrypt) and generates JWT token */
+	public Optional<Object> saveUser(User user) {
 		// Ensure unique userId by regenerating if needed
 		while(userRepository.findByUserId(user.getUserID()).isPresent()){
 			user.setUserID(User.generateRandomUserID());
 		}
-		user.setPassword(passwordEncoder.encode(user.getPassword())); // Encrypt password using BCrypt
-		return userRepository.save(user);
+
+		// Hash the password before saving
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+		// Save the user
+		User savedUser = userRepository.save(user);
+
+		// Generate the JWT token
+		String accessToken = JwtUtil.generateAccessToken(savedUser.getEmail());
+		String refreshToken = JwtUtil.generateRefreshToken(savedUser.getEmail());
+
+		// Return user details with JWT token
+		return Optional.of(new Object() {
+			public Long id = savedUser.getId();
+			public String name = savedUser.getName();
+			public String email = savedUser.getEmail();
+			public String password = savedUser.getPassword(); // Return the hashed password for security
+			public String userID = savedUser.getUserID();
+			public String JWTtoken = accessToken; // Include JWT token in response
+		});
 	}
 
-	/** Authenticates a user and returns JWT token along with user data. */
+	/** Authenticates a user and returns JWT token along with user data */
 	public Optional<Object> authenticateUser(String email, String password) {
 		Optional<User> userOptional = userRepository.findByEmail(email);
 		if (userOptional.isPresent()) {
 			User user = userOptional.get();
 			if (passwordEncoder.matches(password, user.getPassword())) {
 				// Generate JWT tokens
-				String accessToken = JwtUtil.generateAccessToken(email);
-				String refreshToken = JwtUtil.generateRefreshToken(email);
+				String accessToken = JwtUtil.generateAccessToken(user.getEmail());
+				String refreshToken = JwtUtil.generateRefreshToken(user.getEmail());
 
-				// Return user data along with JWT token
+				// Return user details with JWT token
 				return Optional.of(new Object() {
 					public Long id = user.getId();
 					public String name = user.getName();

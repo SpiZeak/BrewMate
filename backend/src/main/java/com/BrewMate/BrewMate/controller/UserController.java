@@ -24,13 +24,18 @@ public class UserController {
         return userService.getAllUsers();
     }
 
+    /** Handles user registration and returns JWT token with user data */
     @PostMapping("/auth/register")
-    public ResponseEntity<User> registerUser(@RequestBody User user) {
-        User savedUser = userService.saveUser(user);
-        return ResponseEntity.ok(savedUser);
+    public ResponseEntity<Object> registerUser(@RequestBody User user) {
+        Optional<Object> userWithToken = userService.saveUser(user);
+        if (userWithToken.isPresent()) {
+            return ResponseEntity.ok(userWithToken.get());
+        } else {
+            return ResponseEntity.status(400).body("Error registering user.");
+        }
     }
 
-    /** Handles user login and returns user data with JWT token. */
+    /** Handles user login and returns user data with JWT token */
     @PostMapping("/auth/login")
     public ResponseEntity<Object> loginUser(@RequestParam String email, @RequestParam String password) {
         Optional<Object> userOptional = userService.authenticateUser(email, password);
@@ -41,7 +46,7 @@ public class UserController {
         }
     }
 
-    /** Refreshes access token using the refresh token stored in cookies. */
+    /** Refreshes access token using the refresh token stored in cookies */
     @PostMapping("/auth/refresh")
     public ResponseEntity<String> refreshAccessToken(@CookieValue(name = "refresh_token", required = false) String refreshToken, HttpServletResponse response) {
         if (refreshToken != null && JwtUtil.isTokenValid(refreshToken, true)) {
@@ -53,7 +58,7 @@ public class UserController {
         return ResponseEntity.status(401).body("Invalid or expired refresh token.");
     }
 
-    /** Helper method to add JWTs as secure HTTP-only cookies. */
+    /** Helper method to add JWTs as secure HTTP-only cookies */
     private void addCookie(HttpServletResponse response, String name, String value, int expiry) {
         Cookie cookie = new Cookie(name, value);
         cookie.setHttpOnly(true);
