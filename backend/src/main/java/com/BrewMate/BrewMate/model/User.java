@@ -1,8 +1,7 @@
 package com.BrewMate.BrewMate.model;
 
 import jakarta.persistence.*;
-
-import java.security.SecureRandom;
+import java.util.UUID;
 
 @Entity
 @Table(name = "users") // Creates a table named 'users'
@@ -56,13 +55,8 @@ public class User {
         this.email = email;
     }
 
-    public static String generateRandomUserID() {
-        String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        SecureRandom RANDOM = new SecureRandom();
-        StringBuilder sb = new StringBuilder(8);
-        for (int i = 0; i < 8; i++) {
-            sb.append(CHARACTERS.charAt(RANDOM.nextInt(CHARACTERS.length())));
-        }
-        return sb.toString();
+    public static String generateUniqueUserID() {
+        // Generate full UUID and take first 8 chars
+        return UUID.randomUUID().toString().substring(0, 8);
     }
 }
