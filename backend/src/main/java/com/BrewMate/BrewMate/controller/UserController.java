@@ -1,8 +1,8 @@
 package com.BrewMate.BrewMate.controller;
 
 import com.BrewMate.BrewMate.model.User;
-import com.BrewMate.BrewMate.security.JwtUtil;
 import com.BrewMate.BrewMate.service.UserService;
+import com.BrewMate.BrewMate.dto.UserDTO;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,41 +24,31 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    /** Handles user registration and returns JWT token with user data */
+    /** Registers a new user and returns user data along with the JWT token */
     @PostMapping("/auth/register")
     public ResponseEntity<Object> registerUser(@RequestBody User user) {
-        Optional<Object> userWithToken = userService.saveUser(user);
-        if (userWithToken.isPresent()) {
-            return ResponseEntity.ok(userWithToken.get());
-        } else {
-            return ResponseEntity.status(400).body("Error registering user.");
+        Optional<UserDTO> savedUser = userService.saveUser(user);
+        if (savedUser.isPresent()) {
+            return ResponseEntity.ok(savedUser.get());  // Return UserDTO with JWT token
         }
+        return ResponseEntity.status(500).body("Error saving user");
     }
 
-    /** Handles user login and returns user data with JWT token */
+    /** Handles user login and sets JWTs as cookies. */
     @PostMapping("/auth/login")
-    public ResponseEntity<Object> loginUser(@RequestParam String email, @RequestParam String password) {
-        Optional<Object> userOptional = userService.authenticateUser(email, password);
-        if (userOptional.isPresent()) {
-            return ResponseEntity.ok(userOptional.get());
+    public ResponseEntity<String> loginUser(@RequestParam String email, @RequestParam String password, HttpServletResponse response) {
+        Optional<UserDTO> tokensOptional = userService.authenticateUser(email, password);
+        if (tokensOptional.isPresent()) {
+            UserDTO tokens = tokensOptional.get();
+            String accessToken = tokens.getJWTtoken();  // Access JWT token from UserDTO
+            addCookie(response, "access_token", accessToken, 900); // 15 min
+            return ResponseEntity.ok("Logged in successfully");
         } else {
             return ResponseEntity.status(401).body("Invalid email or password.");
         }
     }
 
-    /** Refreshes access token using the refresh token stored in cookies */
-    @PostMapping("/auth/refresh")
-    public ResponseEntity<String> refreshAccessToken(@CookieValue(name = "refresh_token", required = false) String refreshToken, HttpServletResponse response) {
-        if (refreshToken != null && JwtUtil.isTokenValid(refreshToken, true)) {
-            String email = JwtUtil.extractEmail(refreshToken, true);
-            String newAccessToken = JwtUtil.generateAccessToken(email);
-            addCookie(response, "access_token", newAccessToken, 900); // New 15 min token
-            return ResponseEntity.ok("Token refreshed");
-        }
-        return ResponseEntity.status(401).body("Invalid or expired refresh token.");
-    }
-
-    /** Helper method to add JWTs as secure HTTP-only cookies */
+    /** Helper method to add JWTs as secure HTTP-only cookies. */
     private void addCookie(HttpServletResponse response, String name, String value, int expiry) {
         Cookie cookie = new Cookie(name, value);
         cookie.setHttpOnly(true);

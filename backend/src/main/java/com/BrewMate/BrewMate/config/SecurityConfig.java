@@ -1,6 +1,5 @@
 package com.BrewMate.BrewMate.config;
 
-import com.BrewMate.BrewMate.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -8,7 +7,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -19,21 +17,14 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-
-    /** Configures security settings, allowing JWT authentication. */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http
-                .csrf(csrf -> csrf.disable()) // ✅ Disable CSRF (re-enable later if needed)
+        http
+                .csrf(csrf -> csrf.disable()) // Disable CSRF (use for stateless authentication)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/users/auth/register", "/users/auth/login", "/users/auth/refresh").permitAll() // Public endpoints
-                        .anyRequest().authenticated() // 🔒 Require authentication for other requests
-                )
-                .addFilterBefore(new JwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class) // ✅ Validate JWT in requests
-                .build();
+                        .requestMatchers("/users/auth/register", "/users/auth/login").permitAll() // Allow public access to register/login
+                        .anyRequest().authenticated() // Require authentication for all other requests
+                );
+        return http.build();
     }
-
-
-
-
 }

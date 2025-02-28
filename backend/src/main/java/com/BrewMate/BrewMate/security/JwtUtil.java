@@ -8,11 +8,12 @@ import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
 import java.util.Date;
 
+// Utility class for generating and verifying JWT tokens
 public class JwtUtil {
 
-    // Define 256-bit secret keys (make sure to store them securely in production)
-    private static final String SECRET_KEY_STRING = "this_is_a_very_secure_256_bit_secret_key_for_jwt_signing_1234567890abcde"; // 256-bit
-    private static final String REFRESH_SECRET_KEY_STRING = "this_is_a_very_secure_256_bit_refresh_secret_key_for_jwt_1234567890abcde"; // 256-bit refresh key
+    // Define the 256-bit secret key for signing the JWT (HS256)
+    private static final String SECRET_KEY_STRING = "detta-ar-en-mycket-lång-hemlig-nyckel-123456"; // Secure key for signing
+    private static final String REFRESH_SECRET_KEY_STRING = "detta-ar-en-mycket-lång-hemlig-nyckel-123456"; // Same secret for both tokens
 
     // Convert the string secret into Key objects
     private static final Key SECRET_KEY = new SecretKeySpec(SECRET_KEY_STRING.getBytes(), SignatureAlgorithm.HS256.getJcaName());
@@ -25,21 +26,21 @@ public class JwtUtil {
     // Generates the access token (15 minutes expiry)
     public static String generateAccessToken(String email) {
         return Jwts.builder()
-                .subject(email)
-                .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + ACCESS_EXPIRATION_TIME))
+                .setSubject(email)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + ACCESS_EXPIRATION_TIME))
                 .signWith(SECRET_KEY, SignatureAlgorithm.HS256) // Sign with the 256-bit secret key
-                .compact();
+                .compact(); // Returns the token with signature included
     }
 
     // Generates the refresh token (7 days expiry)
     public static String generateRefreshToken(String email) {
         return Jwts.builder()
-                .subject(email)
-                .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + REFRESH_EXPIRATION_TIME))
+                .setSubject(email)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + REFRESH_EXPIRATION_TIME))
                 .signWith(REFRESH_SECRET_KEY, SignatureAlgorithm.HS256) // Sign with the refresh secret key
-                .compact();
+                .compact(); // Returns the token with signature included
     }
 
     // Verifies if the token is valid (expiration and signature)
@@ -60,7 +61,7 @@ public class JwtUtil {
     // Extracts the email from the JWT token
     public static String extractEmail(String token, boolean isRefresh) {
         return Jwts.parser()
-                .setSigningKey(isRefresh ? REFRESH_SECRET_KEY : SECRET_KEY) // Use the correct key for validation
+                .setSigningKey(isRefresh ? REFRESH_SECRET_KEY : SECRET_KEY) // Ensure correct key for validation
                 .build()
                 .parseClaimsJws(token)
                 .getBody()

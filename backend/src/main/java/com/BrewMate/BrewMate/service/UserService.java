@@ -3,6 +3,7 @@ package com.BrewMate.BrewMate.service;
 import com.BrewMate.BrewMate.model.User;
 import com.BrewMate.BrewMate.repository.UserRepository;
 import com.BrewMate.BrewMate.security.JwtUtil;
+import com.BrewMate.BrewMate.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,9 +29,9 @@ public class UserService {
 	}
 
 	/** Saves a new user with password encoding (BCrypt) and generates JWT token */
-	public Optional<Object> saveUser(User user) {
+	public Optional<UserDTO> saveUser(User user) {
 		// Ensure unique userId by regenerating if needed
-		while(userRepository.findByUserId(user.getUserID()).isPresent()){
+		while (userRepository.findByUserId(user.getUserID()).isPresent()) {
 			user.setUserID(User.generateRandomUserID());
 		}
 
@@ -44,19 +45,13 @@ public class UserService {
 		String accessToken = JwtUtil.generateAccessToken(savedUser.getEmail());
 		String refreshToken = JwtUtil.generateRefreshToken(savedUser.getEmail());
 
-		// Return user details with JWT token
-		return Optional.of(new Object() {
-			public Long id = savedUser.getId();
-			public String name = savedUser.getName();
-			public String email = savedUser.getEmail();
-			public String password = savedUser.getPassword(); // Return the hashed password for security
-			public String userID = savedUser.getUserID();
-			public String JWTtoken = accessToken; // Include JWT token in response
-		});
+		// Return user details with JWT token in DTO
+		return Optional.of(new UserDTO(savedUser.getId(), savedUser.getName(), savedUser.getEmail(),
+				savedUser.getPassword(), savedUser.getUserID(), accessToken));
 	}
 
 	/** Authenticates a user and returns JWT token along with user data */
-	public Optional<Object> authenticateUser(String email, String password) {
+	public Optional<UserDTO> authenticateUser(String email, String password) {
 		Optional<User> userOptional = userRepository.findByEmail(email);
 		if (userOptional.isPresent()) {
 			User user = userOptional.get();
@@ -65,15 +60,9 @@ public class UserService {
 				String accessToken = JwtUtil.generateAccessToken(user.getEmail());
 				String refreshToken = JwtUtil.generateRefreshToken(user.getEmail());
 
-				// Return user details with JWT token
-				return Optional.of(new Object() {
-					public Long id = user.getId();
-					public String name = user.getName();
-					public String email = user.getEmail();
-					public String password = user.getPassword(); // Return the hashed password for security
-					public String userID = user.getUserID();
-					public String JWTtoken = accessToken; // Include JWT token in response
-				});
+				// Return user details with JWT token in DTO
+				return Optional.of(new UserDTO(user.getId(), user.getName(), user.getEmail(),
+						user.getPassword(), user.getUserID(), accessToken));
 			}
 		}
 		return Optional.empty();
