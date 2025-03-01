@@ -15,16 +15,17 @@ export const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    setToken: (state, action: { payload: string }) => {
-      state.token = action.payload;
-    },
+    setUser: (state, action) => ({
+      ...state,
+      ...action.payload,
+    }),
     clearToken: state => {
       state.token = '';
     },
   },
 });
 
-export const { setToken, clearToken } = userSlice.actions;
+export const { setUser, clearToken } = userSlice.actions;
 export const selectToken = (state: RootState) => state.user.token;
 export const selectIsAuthenticated = (state: RootState) => !!state.user.token;
 export const selectUsername = (state: RootState) => state.user.username;

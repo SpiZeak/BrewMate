@@ -1,6 +1,10 @@
-import MuiAvatar from '@mui/material/Avatar';
+import { selectUsername } from '@features/user/userSlice';
+import MuiAvatar, { AvatarOwnProps } from '@mui/material/Avatar';
+import { useSelector } from 'react-redux';
 
-const Avatar = () => {
+const Avatar = (props: AvatarOwnProps) => {
+  const username = useSelector(selectUsername);
+
   function stringToColor(string: string) {
     let hash = 0;
     let i;
@@ -9,26 +13,42 @@ const Avatar = () => {
       hash = string.charCodeAt(i) + ((hash << 5) - hash);
     }
 
-    let color = '#';
+    // Generate base color
+    let r = hash & 0xff;
+    let g = (hash >> 8) & 0xff;
+    let b = (hash >> 16) & 0xff;
 
-    for (i = 0; i < 3; i += 1) {
-      const value = (hash >> (i * 8)) & 0xff;
-      color += `00${value.toString(16)}`.slice(-2);
-    }
+    // Ensure color is not too dark by setting minimum RGB values
+    const minBrightness = 100; // Adjust this value (0-255) to control brightness
+    r = Math.max(r, minBrightness);
+    g = Math.max(g, minBrightness);
+    b = Math.max(b, minBrightness);
 
-    return color;
+    // Convert to hex
+    return `#${r.toString(16).padStart(2, '0')}${g
+      .toString(16)
+      .padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
   }
 
   function stringAvatar(name: string) {
     return {
       sx: {
         bgcolor: stringToColor(name),
+        width: 24,
+        height: 24,
       },
-      children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
+      children: initials.toUpperCase(),
     };
   }
 
-  return <MuiAvatar {...stringAvatar('Max Trewhitt')} />;
+  const overrideProps = {
+    sx: {
+      bgcolor: stringToColor(username),
+      ...props.sx,
+    },
+  };
+
+  return <MuiAvatar {...overrideProps}>{username[0].toUpperCase()}</MuiAvatar>;
 };
 
 export default Avatar;

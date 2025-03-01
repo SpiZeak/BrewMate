@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { Link } from 'react-router';
 import Typography from '@mui/material/Typography';
 import { useDispatch } from 'react-redux';
-import { setToken } from '@features/user/userSlice';
+import { setUser } from '@features/user/userSlice';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -23,8 +23,8 @@ const Login = () => {
 
     console.log(data.token);
 
-    if (data.token) {
-      dispatch(setToken(data.token));
+    if (data) {
+      dispatch(setUser(data));
     }
   }
 
