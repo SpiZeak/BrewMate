@@ -1,8 +1,12 @@
 package com.BrewMate.BrewMate.model;
 
+
+
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.security.SecureRandom;
+import java.util.Date;
 
 @Entity
 @Table(name = "users") // Creates a table named 'users'
@@ -15,12 +19,30 @@ public class User {
     @Column(unique = true, nullable = true, length = 8) // Unique 8-character identifier (not auto-incremented)
     private String userId;
 
+    @Column(nullable = false)
     private String name;
+
+    @Column(unique = true, nullable = false)
     private String email;
+
+    @Column (nullable = false)
+    private String password;
+
+    @CreationTimestamp
+    @Column(updatable = false, name = "created_at")
+    private Date createdAt;
 
     // assign unique userID
     public User() {
         this.userId = generateRandomUserID();
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     // Getters and setters
