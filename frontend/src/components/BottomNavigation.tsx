@@ -6,10 +6,13 @@ import HouseIcon from '@mui/icons-material/House';
 import Paper from '@mui/material/Paper';
 import { useLocation, useNavigate } from 'react-router';
 import Avatar from './Avatar';
+import { useSelector } from 'react-redux';
+import { selectIsAuthenticated } from '@features/user/userSlice';
 
 const BottomNavigation = () => {
   const location = useLocation();
   const [value, setValue] = useState(location.pathname);
+  const isAuthenticated = useSelector(selectIsAuthenticated);
 
   const handleChange = async (_: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
@@ -27,7 +30,7 @@ const BottomNavigation = () => {
           value='/auth'
           icon={<LoginIcon />}
         />
-        {false && (
+        {isAuthenticated && (
           <BottomNavigationAction
             label='Profile'
             value='/profile'
