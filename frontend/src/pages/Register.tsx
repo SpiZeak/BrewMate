@@ -8,7 +8,6 @@ const Register = () => {
   function handleSubmit(e) {
     e.preventDefault();
     const formData = new FormData(e.target);
-    console.log(formData);
   }
 
   return (
