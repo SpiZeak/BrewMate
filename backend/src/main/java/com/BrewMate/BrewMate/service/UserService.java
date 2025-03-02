@@ -34,7 +34,8 @@ public class UserService {
     public Optional<UserDTO> saveUser(User user) {
         // Ensure unique userId by regenerating if needed
         while (userRepository.findByUserId(user.getUserID()).isPresent()) {
-            user.setUserID(User.generateRandomUserID());
+            // Change from generateRandomUserID() to generateUniqueUserID()
+            user.setUserID(User.generateUniqueUserID());
         }
 
         // Hash the password before saving
@@ -51,6 +52,7 @@ public class UserService {
         return Optional.of(new UserDTO(savedUser.getId(), savedUser.getName(), savedUser.getEmail(),
                 savedUser.getPassword(), savedUser.getUserID(), accessToken));
     }
+
 
     /**
      * Authenticates a user and returns JWT token along with user data
