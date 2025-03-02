@@ -15,7 +15,7 @@ export const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    setUser: (state, action) => ({
+    setUser: (state, action: { payload: Partial<UserState> }) => ({
       ...state,
       ...action.payload,
     }),
