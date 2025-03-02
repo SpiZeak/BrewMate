@@ -1,12 +1,16 @@
 package com.BrewMate.BrewMate.model;
 
+import java.util.Date;
+import java.util.UUID;
 
-
-import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.security.SecureRandom;
-import java.util.Date;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "users") // Creates a table named 'users'
@@ -25,7 +29,7 @@ public class User {
     @Column(unique = true, nullable = false)
     private String email;
 
-    @Column (nullable = false)
+    @Column(nullable = false)
     private String password;
 
     @CreationTimestamp
@@ -34,7 +38,7 @@ public class User {
 
     // assign unique userID
     public User() {
-        this.userId = generateRandomUserID();
+        this.userId = generateUniqueUserID();
     }
 
     public String getPassword() {
@@ -78,13 +82,8 @@ public class User {
         this.email = email;
     }
 
-    public static String generateRandomUserID() {
-        String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        SecureRandom RANDOM = new SecureRandom();
-        StringBuilder sb = new StringBuilder(8);
-        for (int i = 0; i < 8; i++) {
-            sb.append(CHARACTERS.charAt(RANDOM.nextInt(CHARACTERS.length())));
-        }
-        return sb.toString();
+    public static String generateUniqueUserID() {
+        // Generate full UUID and take first 8 chars
+        return UUID.randomUUID().toString().substring(0, 8);
     }
 }
