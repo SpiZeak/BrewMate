@@ -1,26 +1,25 @@
 package com.BrewMate.BrewMate.security;
 
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
-import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
 import java.util.Date;
 
-// Utility class for generating and verifying JWT tokens
 public class JwtUtil {
 
-    // Define the 256-bit secret key for signing the JWT (HS256)
+    // Define the secret key for signing the JWT
     private static final String SECRET_KEY_STRING = "detta-ar-en-mycket-lång-hemlig-nyckel-123456"; // Secure key for signing
     private static final String REFRESH_SECRET_KEY_STRING = "detta-ar-en-mycket-lång-hemlig-nyckel-123456"; // Same secret for both tokens
 
-    // Convert the string secret into Key objects
-    private static final Key SECRET_KEY = new SecretKeySpec(SECRET_KEY_STRING.getBytes(), SignatureAlgorithm.HS256.getJcaName());
-    private static final Key REFRESH_SECRET_KEY = new SecretKeySpec(REFRESH_SECRET_KEY_STRING.getBytes(), SignatureAlgorithm.HS256.getJcaName());
+    // Convert the string secret into Key objects using Keys.hmacShaKeyFor()
+    private static final Key SECRET_KEY = Keys.hmacShaKeyFor(SECRET_KEY_STRING.getBytes());
+    private static final Key REFRESH_SECRET_KEY = Keys.hmacShaKeyFor(REFRESH_SECRET_KEY_STRING.getBytes());
 
     // Expiry times for access and refresh tokens
-    private static final long ACCESS_EXPIRATION_TIME = 1000 * 60 * 15; // 15 minutes
+    private static final long ACCESS_EXPIRATION_TIME = 1000 * 60 * 60; // 60 minutes
     private static final long REFRESH_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 7; // 7 days
 
     // Generates the access token (15 minutes expiry)
@@ -29,7 +28,7 @@ public class JwtUtil {
                 .setSubject(email)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + ACCESS_EXPIRATION_TIME))
-                .signWith(SECRET_KEY, SignatureAlgorithm.HS256) // Sign with the 256-bit secret key
+                .signWith(SECRET_KEY) // No need to specify the algorithm, it's inferred from the Key
                 .compact(); // Returns the token with signature included
     }
 
@@ -39,7 +38,7 @@ public class JwtUtil {
                 .setSubject(email)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + REFRESH_EXPIRATION_TIME))
-                .signWith(REFRESH_SECRET_KEY, SignatureAlgorithm.HS256) // Sign with the refresh secret key
+                .signWith(REFRESH_SECRET_KEY) // No need to specify the algorithm, it's inferred from the Key
                 .compact(); // Returns the token with signature included
     }
 
