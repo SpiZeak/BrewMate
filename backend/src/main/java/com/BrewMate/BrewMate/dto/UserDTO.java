@@ -13,14 +13,16 @@ public class UserDTO {
     // Constructor, Getters, and Setters
 
     public UserDTO(Long id, String name, String email, String userID,
-                   String accessToken, String refreshToken) {
+                   String accessToken, String refreshToken, String password) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.userID = userID;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
+        this.password = password;
     }
+
 
     public Long getId() {
         return id;

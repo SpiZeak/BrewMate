@@ -48,8 +48,15 @@ public class UserService {
         String refreshToken = JwtUtil.generateRefreshToken(savedUser.getEmail());
 
         // Return user details with JWT token in DTO
-        return Optional.of(new UserDTO(savedUser.getId(), savedUser.getName(), savedUser.getEmail(),
-                savedUser.getPassword(), savedUser.getUserID(), accessToken));
+        return Optional.of(new UserDTO(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getUserID(),
+                accessToken,
+                refreshToken,    // Add this parameter
+                user.getPassword()
+        ));
     }
 
     /**
@@ -65,8 +72,15 @@ public class UserService {
                 String refreshToken = JwtUtil.generateRefreshToken(user.getEmail());
 
                 // Return user details with JWT token in DTO
-                return Optional.of(new UserDTO(user.getId(), user.getName(), user.getEmail(),
-                        user.getPassword(), user.getUserID(), accessToken));
+                return Optional.of(new UserDTO(
+                        user.getId(),
+                        user.getName(),
+                        user.getEmail(),
+                        user.getUserID(),       // This was user.getPassword() before
+                        accessToken,
+                        refreshToken,          // You need to add the refreshToken parameter
+                        user.getPassword()     // Add password as the last parameter
+                ));
             }
         }
         return Optional.empty();
