@@ -22,7 +22,7 @@ public class JwtUtil {
     private static final long ACCESS_EXPIRATION_TIME = 1000 * 60 * 60; // 60 minutes
     private static final long REFRESH_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 7; // 7 days
 
-    // Generates the access token (15 minutes expiry)
+    // Generates the access token (60 minutes expiry)
     public static String generateAccessToken(String email) {
         return Jwts.builder()
                 .setSubject(email)
