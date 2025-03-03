@@ -41,3 +41,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 }
+
+
+/*The cookie validation happens in the `JwtAuthenticationFilter` which:
+        1. Extracts the access token from the cookies
+        2. Validates the token using `JwtUtil.isTokenValid()`
+        3. If valid, creates an authentication token and sets it in the security context
+        4. If invalid, returns a 401 Unauthorized response
+
+This filter extends `OncePerRequestFilter`, meaning it runs before every request to validate the JWT cookie. This is a security best practice as it ensures that every protected endpoint is properly authenticated.
+So while the `UserController` handles setting the cookies during login, the actual validation of those cookies happens automatically through Spring Security's filter chain via the `JwtAuthenticationFilter`.
+        */
