@@ -40,7 +40,7 @@ public class UserController {
         Optional<UserDTO> tokensOptional = userService.authenticateUser(email, password);
         if (tokensOptional.isPresent()) {
             UserDTO tokens = tokensOptional.get();
-            String accessToken = tokens.getJWTtoken();  // Access JWT token from UserDTO
+            String accessToken = tokens.getAccessToken();  // Access JWT token from UserDTO
             addCookie(response, "access_token", accessToken, 900); // 15 min
             return ResponseEntity.ok("Logged in successfully");
         } else {
@@ -54,8 +54,8 @@ public class UserController {
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
         cookie.setPath("/");
-        cookie.setSameSite("Strict");
         cookie.setMaxAge(expiry);
-        response.addCookie(cookie);
+        response.addHeader("Set-Cookie", String.format("%s=%s; Max-Age=%d; Path=%s; HttpOnly; Secure; SameSite=Strict",
+                name, value, expiry, cookie.getPath()));
     }
 }
