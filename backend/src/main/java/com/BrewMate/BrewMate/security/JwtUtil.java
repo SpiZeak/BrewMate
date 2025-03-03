@@ -16,7 +16,7 @@ public class JwtUtil {
     private static final SecretKey secretKey = Keys.hmacShaKeyFor(SECRET_KEY_STRING.getBytes(StandardCharsets.UTF_8));
     private static final SecretKey refreshSecretKey = Keys.hmacShaKeyFor(REFRESH_SECRET_KEY_STRING.getBytes(StandardCharsets.UTF_8));
 
-    private static final long ACCESS_EXPIRATION_TIME = 1000 * 60 * 15;
+    private static final long ACCESS_EXPIRATION_TIME = 1000 * 60 * 60;
     private static final long REFRESH_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 7;
 
     public static String generateAccessToken(String email) {
