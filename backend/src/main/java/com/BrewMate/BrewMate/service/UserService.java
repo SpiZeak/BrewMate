@@ -29,12 +29,12 @@ public class UserService {
     }
 
     /**
-     * Saves a new user with password encoding (BCrypt) and generates JWT token
+     * Saves a new user with password encoding (BCrypt) and generates JWT tokens
      */
     public Optional<UserDTO> saveUser(User user) {
         // Ensure unique userId by regenerating if needed
         while (userRepository.findByUserId(user.getUserID()).isPresent()) {
-            user.setUserID(User.generateRandomUserID());
+            user.setUserID(User.generateUniqueUserID());
         }
 
         // Hash the password before saving
@@ -43,17 +43,23 @@ public class UserService {
         // Save the user
         User savedUser = userRepository.save(user);
 
-        // Generate the JWT token
+        // Generate JWT tokens
         String accessToken = JwtUtil.generateAccessToken(savedUser.getEmail());
         String refreshToken = JwtUtil.generateRefreshToken(savedUser.getEmail());
 
-        // Return user details with JWT token in DTO
-        return Optional.of(new UserDTO(savedUser.getId(), savedUser.getName(), savedUser.getEmail(),
-                savedUser.getPassword(), savedUser.getUserID(), accessToken));
+        // Return user details with both access and refresh tokens in DTO
+        return Optional.of(new UserDTO(
+                savedUser.getId(),
+                savedUser.getName(),
+                savedUser.getEmail(),
+                savedUser.getUserID(),
+                accessToken,
+                refreshToken
+        ));
     }
 
     /**
-     * Authenticates a user and returns JWT token along with user data
+     * Authenticates a user and returns both access and refresh tokens along with user data
      */
     public Optional<UserDTO> authenticateUser(String email, String password) {
         Optional<User> userOptional = userRepository.findByEmail(email);
@@ -64,11 +70,18 @@ public class UserService {
                 String accessToken = JwtUtil.generateAccessToken(user.getEmail());
                 String refreshToken = JwtUtil.generateRefreshToken(user.getEmail());
 
-                // Return user details with JWT token in DTO
-                return Optional.of(new UserDTO(user.getId(), user.getName(), user.getEmail(),
-                        user.getPassword(), user.getUserID(), accessToken));
+                // Return user details with both access and refresh tokens in DTO
+                return Optional.of(new UserDTO(
+                        user.getId(),
+                        user.getName(),
+                        user.getEmail(),
+                        user.getUserID(),
+                        accessToken,
+                        refreshToken
+                ));
+
             }
         }
-        return Optional.empty();
+            return Optional.empty();
     }
 }

@@ -52,7 +52,9 @@ public class UserController {
     private void addCookie(HttpServletResponse response, String name, String value, int expiry) {
         Cookie cookie = new Cookie(name, value);
         cookie.setHttpOnly(true);
+        cookie.setSecure(true);
         cookie.setPath("/");
+        cookie.setSameSite("Strict");
         cookie.setMaxAge(expiry);
         response.addCookie(cookie);
     }

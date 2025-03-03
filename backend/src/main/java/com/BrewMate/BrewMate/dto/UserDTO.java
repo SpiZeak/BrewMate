@@ -7,17 +7,19 @@ public class UserDTO {
     private String email;
     private String password;  // Password should be securely handled
     private String userID;
-    private String JWTtoken;
+    private String accessToken;  // Access token
+    private String refreshToken; // Refresh token
 
     // Constructor, Getters, and Setters
 
-    public UserDTO(Long id, String name, String email, String password, String userID, String JWTtoken) {
+    public UserDTO(Long id, String name, String email, String userID,
+                   String accessToken, String refreshToken) {
         this.id = id;
         this.name = name;
         this.email = email;
-        this.password = password;
         this.userID = userID;
-        this.JWTtoken = JWTtoken;
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
     }
 
     public Long getId() {
@@ -60,11 +62,19 @@ public class UserDTO {
         this.userID = userID;
     }
 
-    public String getJWTtoken() {
-        return JWTtoken;
+    public String getAccessToken() {
+        return accessToken;
     }
 
-    public void setJWTtoken(String JWTtoken) {
-        this.JWTtoken = JWTtoken;
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 }
