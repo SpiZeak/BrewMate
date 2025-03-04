@@ -10,14 +10,20 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 public class JwtUtil {
+    // Secret key used to sign and verify the access tokens
     private static final String SECRET_KEY_STRING = "detta-ar-en-mycket-lång-hemlig-nyckel-123456";
+    // Secret key used to sign and verify the refresh tokens
     private static final String REFRESH_SECRET_KEY_STRING = "detta-ar-en-mycket-lång-hemlig-nyckel-123456";
 
+    // Generate the secret keys from the provided strings
     private static final SecretKey secretKey = Keys.hmacShaKeyFor(SECRET_KEY_STRING.getBytes(StandardCharsets.UTF_8));
     private static final SecretKey refreshSecretKey = Keys.hmacShaKeyFor(REFRESH_SECRET_KEY_STRING.getBytes(StandardCharsets.UTF_8));
 
-    private static final long ACCESS_EXPIRATION_TIME = 1000 * 60 * 60;
-    private static final long REFRESH_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 7;
+    // Token expiration time (in milliseconds) for access tokens
+    private static final long ACCESS_EXPIRATION_TIME = 1000 * 60 * 60; // 1 hour
+    // Token expiration time (in milliseconds) for refresh tokens
+    private static final long REFRESH_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 7; // 7 days
+
 
     public static String generateAccessToken(String email) {
         return Jwts.builder()
