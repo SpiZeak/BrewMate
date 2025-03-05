@@ -19,7 +19,7 @@ export const userSlice = createSlice({
       ...state,
       ...action.payload,
     }),
-    clearUser: state => initialState,
+    clearUser: () => initialState,
   },
 });
 
@@ -28,3 +28,4 @@ export const selectToken = (state: RootState) => state.user.token;
 export const selectIsAuthenticated = (state: RootState) => !!state.user.token;
 export const selectUsername = (state: RootState) => state.user.username;
 export default userSlice.reducer;
+export type { UserState };

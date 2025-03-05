@@ -5,25 +5,24 @@ import { useState } from 'react';
 import { Link } from 'react-router';
 import Typography from '@mui/material/Typography';
 import { useDispatch } from 'react-redux';
-import { setUser } from '@features/user/userSlice';
+import { setUser, UserState } from '@features/user/userSlice';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const dispatch = useDispatch();
 
-  async function handleSubmit(e) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const formData = new FormData(e.target);
+    const formData = new FormData(e.currentTarget);
     const response = await fetch('/login.json', {
       method: 'POST',
       body: formData,
     });
-    const data = await response.json();
 
-    if (data) {
-      dispatch(setUser(data));
-    }
+    const data: UserState = (await response.json()) as UserState;
+
+    dispatch(setUser(data));
   }
 
   return (
@@ -37,7 +36,9 @@ const Login = () => {
         label='Email'
         variant='outlined'
         required
-        onChange={e => setEmail(e.target.value)}
+        onChange={e => {
+          setEmail(e.target.value);
+        }}
         className='mb-4'
         name='email'
       />
@@ -46,7 +47,9 @@ const Login = () => {
         label='Password'
         variant='outlined'
         required
-        onChange={e => setPassword(e.target.value)}
+        onChange={e => {
+          setPassword(e.target.value);
+        }}
         name='password'
       />
       <Button type='submit' variant='contained' disabled={!email || !password}>
