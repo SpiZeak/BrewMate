@@ -1,14 +1,15 @@
 package com.BrewMate.BrewMate.service;
 
-import com.BrewMate.BrewMate.model.Coffee;
-import com.BrewMate.BrewMate.repository.CoffeeRepository;
-import com.BrewMate.BrewMate.dto.CoffeeDTO;
-import com.BrewMate.BrewMate.dto.Ingredient;
-import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+
+import com.BrewMate.BrewMate.dto.CoffeeDTO;
+import com.BrewMate.BrewMate.dto.Ingredient;
+import com.BrewMate.BrewMate.model.Coffee;
+import com.BrewMate.BrewMate.repository.CoffeeRepository;
 
 @Service
 public class CoffeeService {
@@ -42,7 +43,7 @@ public class CoffeeService {
     }
 
 //    Retrieve coffees filtered by brewing style
-    public List<Coffee> getCoffeesByBrewingStyle(String brewStyle){
+    public List<Coffee> getCoffeesByBrewingStyle(String brewStyle) {
         return coffeeRepository.findByBrewingStyle(brewStyle);
     }
 
@@ -93,10 +94,14 @@ public class CoffeeService {
 
         for (Ingredient ing : coffeeDTO.getIngredients()) {
             switch (ing.getName().toLowerCase()) {
-                case "espresso" -> espressoPart = (int)(ing.getRatio() * 100);
-                case "milk"     -> milkPart     = (int)(ing.getRatio() * 100);
-                case "foam"     -> foamPart     = (int)(ing.getRatio() * 100);
-                case "water"    -> waterPart    = (int)(ing.getRatio() * 100);
+                case "espresso" ->
+                    espressoPart = (int) (ing.getRatio() * 100);
+                case "milk" ->
+                    milkPart = (int) (ing.getRatio() * 100);
+                case "foam" ->
+                    foamPart = (int) (ing.getRatio() * 100);
+                case "water" ->
+                    waterPart = (int) (ing.getRatio() * 100);
             }
         }
 
