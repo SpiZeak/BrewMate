@@ -1,0 +1,18 @@
+# fly.toml configuration for BrewMate backend service
+
+app = "brewmate"
+primary_region = "arn"
+
+[build]
+dockerfile = "./backend/Dockerfile"
+
+[env]
+JAVA_OPTS = "-Xmx175m -Xms128m -XX:+UseContainerSupport -XX:MaxRAMPercentage=75"
+SPRING_PROFILES_ACTIVE = "production"
+
+[deploy]
+release_command = "" # Not needed as the Dockerfile handles startup
+
+[http_service]
+internal_port = 8081 # Matching the port in application.properties
+force_https = true
