@@ -53,7 +53,7 @@ public class SecurityConfig {
                 // === URL Access Rules ===
                 // Define which URLs are public and which need authentication
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/users/auth/register", "/users/auth/login").permitAll()
+                        .requestMatchers("/users/auth/register", "/users/auth/login", "/api/coffees").permitAll()
                         .anyRequest().authenticated())
 
 
