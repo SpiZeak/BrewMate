@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
+    "@types/bun": "^1.2.4",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^4.3.4",
@@ -35,7 +36,7 @@
     "globals": "^16.0.0",
     "sass-embedded": "^1.85.1",
     "typescript": "~5.8.2",
-    "typescript-eslint": "^8.25.0",
+    "typescript-eslint": "^8.26.0",
     "vite": "^beta",
     "vite-plugin-pwa": "^0.21.1"
   }
