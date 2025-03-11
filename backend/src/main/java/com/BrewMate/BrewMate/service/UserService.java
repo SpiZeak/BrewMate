@@ -15,13 +15,15 @@ import java.util.Optional;
 public class UserService {
 
     @Autowired
-    private UserRepository userRepository;
-
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
     }
 
     public List<User> getAllUsers() {
@@ -32,32 +34,27 @@ public class UserService {
      * Saves a new user with password encoding (BCrypt) and generates JWT token
      */
     public Optional<UserDTO> saveUser(User user) {
-        // Ensure unique userId by regenerating if needed
         while (userRepository.findByUserId(user.getUserID()).isPresent()) {
             user.setUserID(User.generateUniqueUserID());
         }
 
-        // Hash the password before saving
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-
-        // Save the user
         User savedUser = userRepository.save(user);
 
-        // Generate the JWT token
-        String accessToken = JwtUtil.generateAccessToken(savedUser.getEmail());
-        String refreshToken = JwtUtil.generateRefreshToken(savedUser.getEmail());
+        String accessToken = jwtUtil.generateAccessToken(savedUser.getEmail());
+        String refreshToken = jwtUtil.generateRefreshToken(savedUser.getEmail());
 
-        // Return user details with JWT token in DTO
         return Optional.of(new UserDTO(
                 user.getId(),
                 user.getName(),
                 user.getEmail(),
                 user.getUserID(),
                 accessToken,
-                refreshToken,    // Add this parameter
+                refreshToken,
                 user.getPassword()
         ));
     }
+
 
     /**
      * Authenticates a user and returns JWT token along with user data
@@ -67,19 +64,18 @@ public class UserService {
         if (userOptional.isPresent()) {
             User user = userOptional.get();
             if (passwordEncoder.matches(password, user.getPassword())) {
-                // Generate JWT tokens
-                String accessToken = JwtUtil.generateAccessToken(user.getEmail());
-                String refreshToken = JwtUtil.generateRefreshToken(user.getEmail());
 
-                // Return user details with JWT token in DTO
+                String accessToken = jwtUtil.generateAccessToken(user.getEmail());
+                String refreshToken = jwtUtil.generateRefreshToken(user.getEmail());
+
                 return Optional.of(new UserDTO(
                         user.getId(),
                         user.getName(),
                         user.getEmail(),
-                        user.getUserID(),       // This was user.getPassword() before
+                        user.getUserID(),
                         accessToken,
-                        refreshToken,          // You need to add the refreshToken parameter
-                        user.getPassword()     // Add password as the last parameter
+                        refreshToken,
+                        user.getPassword()
                 ));
             }
         }

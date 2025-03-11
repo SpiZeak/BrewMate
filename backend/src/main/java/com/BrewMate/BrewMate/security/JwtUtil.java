@@ -4,46 +4,52 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
+@Component
 public class JwtUtil {
-    // Secret key used to sign and verify the access tokens
-    private static final String SECRET_KEY_STRING = "detta-ar-en-mycket-lång-hemlig-nyckel-123456";
-    // Secret key used to sign and verify the refresh tokens
-    private static final String REFRESH_SECRET_KEY_STRING = "detta-ar-en-mycket-lång-hemlig-nyckel-123456";
 
-    // Generate the secret keys from the provided strings
-    private static final SecretKey secretKey = Keys.hmacShaKeyFor(SECRET_KEY_STRING.getBytes(StandardCharsets.UTF_8));
-    private static final SecretKey refreshSecretKey = Keys.hmacShaKeyFor(REFRESH_SECRET_KEY_STRING.getBytes(StandardCharsets.UTF_8));
+    private final SecretKey secretKey;
+    private final SecretKey refreshSecretKey;
+    private final long accessExpirationMs;
+    private final long refreshExpirationMs;
 
-    // Token expiration time (in milliseconds) for access tokens
-    private static final long ACCESS_EXPIRATION_TIME = 1000 * 60 * 60; // 1 hour
-    // Token expiration time (in milliseconds) for refresh tokens
-    private static final long REFRESH_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 7; // 7 days
+    public JwtUtil(
+            @Value("${jwt.secret}") String secretKeyString,
+            @Value("${jwt.refreshSecret}") String refreshSecretKeyString,
+            @Value("${jwt.accessExpirationMs}") long accessExpirationMs,
+            @Value("${jwt.refreshExpirationMs}") long refreshExpirationMs
+    ) {
+        this.secretKey = Keys.hmacShaKeyFor(secretKeyString.getBytes(StandardCharsets.UTF_8));
+        this.refreshSecretKey = Keys.hmacShaKeyFor(refreshSecretKeyString.getBytes(StandardCharsets.UTF_8));
+        this.accessExpirationMs = accessExpirationMs;
+        this.refreshExpirationMs = refreshExpirationMs;
+    }
 
-
-    public static String generateAccessToken(String email) {
+    public String generateAccessToken(String email) {
         return Jwts.builder()
                 .subject(email)
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + ACCESS_EXPIRATION_TIME))
+                .expiration(new Date(System.currentTimeMillis() + accessExpirationMs))
                 .signWith(secretKey, Jwts.SIG.HS256)
                 .compact();
     }
 
-    public static String generateRefreshToken(String email) {
+    public String generateRefreshToken(String email) {
         return Jwts.builder()
                 .subject(email)
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + REFRESH_EXPIRATION_TIME))
+                .expiration(new Date(System.currentTimeMillis() + refreshExpirationMs))
                 .signWith(refreshSecretKey, Jwts.SIG.HS256)
                 .compact();
     }
 
-    public static boolean isTokenValid(String token, boolean isRefresh) {
+    public boolean isTokenValid(String token, boolean isRefresh) {
         try {
             Jws<Claims> claims = Jwts.parser()
                     .verifyWith(isRefresh ? refreshSecretKey : secretKey)
@@ -56,7 +62,7 @@ public class JwtUtil {
         }
     }
 
-    public static String extractEmail(String token, boolean isRefresh) {
+    public String extractEmail(String token, boolean isRefresh) {
         return Jwts.parser()
                 .verifyWith(isRefresh ? refreshSecretKey : secretKey)
                 .build()
@@ -65,7 +71,7 @@ public class JwtUtil {
                 .getSubject();
     }
 
-    public static String getTokenFromRequest(HttpServletRequest request, String cookieName) {
+    public String getTokenFromRequest(HttpServletRequest request, String cookieName) {
         if (request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
                 if (cookieName.equals(cookie.getName())) {
