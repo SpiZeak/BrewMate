@@ -16,7 +16,7 @@ public class Coffee {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-increment ID
     private Long id;
 
-    @Column(nullable = false, unique = true)   // Coffee name must be unique
+    @Column(nullable = false)   // Coffee name must be unique
     private String name;
 
     private int espressoRatio;

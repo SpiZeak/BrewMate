@@ -9,4 +9,5 @@ VALUES
   ('Ristretto', 10, 0, 0, 0, 'Italian', 'Ristretto.webp'),  -- Stronger than Espresso
   ('Long Black', 5, 0, 0, 5, 'Australian', 'Long Black.webp'), -- Espresso 50%, Water 50%
   ('Americano', 3, 0, 0, 7, 'American', 'Americano.webp'),  -- Espresso 30%, Water 70%
-  ('Breve', 3, 6, 1, 0, 'American', 'Breve.webp');      -- Espresso 30%, Milk 60%, Foam 10%
+  ('Breve', 3, 6, 1, 0, 'American', 'Breve.webp'),      -- Espresso 30%, Milk 60%, Foam 10%
+   ('Breve', 3, 6, 1, 0, 'American', 'Breve.webp');
