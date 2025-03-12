@@ -34,9 +34,7 @@ public class UserService {
      * Saves a new user with password encoding (BCrypt) and generates JWT token
      */
     public Optional<UserDTO> saveUser(User user) {
-        while (userRepository.findByUserId(user.getUserID()).isPresent()) {
-            user.setUserID(User.generateUniqueUserID());
-        }
+
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User savedUser = userRepository.save(user);
@@ -48,7 +46,6 @@ public class UserService {
                 user.getId(),
                 user.getName(),
                 user.getEmail(),
-                user.getUserID(),
                 accessToken,
                 refreshToken,
                 user.getPassword()
@@ -72,7 +69,6 @@ public class UserService {
                         user.getId(),
                         user.getName(),
                         user.getEmail(),
-                        user.getUserID(),
                         accessToken,
                         refreshToken,
                         user.getPassword()

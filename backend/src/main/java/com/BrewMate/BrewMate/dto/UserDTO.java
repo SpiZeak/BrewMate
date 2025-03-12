@@ -6,18 +6,16 @@ public class UserDTO {
     private String name;
     private String email;
     private String password;  // Password should be securely handled
-    private String userID;
     private String accessToken;  // Access token
     private String refreshToken; // Refresh token
 
     // Constructor, Getters, and Setters
 
-    public UserDTO(Long id, String name, String email, String userID,
+    public UserDTO(Long id, String name, String email,
                    String accessToken, String refreshToken, String password) {
         this.id = id;
         this.name = name;
         this.email = email;
-        this.userID = userID;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
         this.password = password;
@@ -56,13 +54,7 @@ public class UserDTO {
         this.password = password;
     }
 
-    public String getUserID() {
-        return userID;
-    }
 
-    public void setUserID(String userID) {
-        this.userID = userID;
-    }
 
     public String getAccessToken() {
         return accessToken;
