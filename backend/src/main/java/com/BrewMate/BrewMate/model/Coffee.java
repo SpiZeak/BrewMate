@@ -31,6 +31,16 @@ public class Coffee {
     @Column(nullable = false)
     private String brewingStyle;
 
+    @Column
+    private String imagePath;
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
 
     public Coffee() {}
     public Coffee(String name, int espressoRatio, int milkRatio, int foamRatio, int waterRatio) {

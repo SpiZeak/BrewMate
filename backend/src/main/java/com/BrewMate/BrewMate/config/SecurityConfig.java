@@ -47,7 +47,7 @@ public class SecurityConfig {
 
                 // URL Access Rules
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/users/auth/register", "/users/auth/login", "/api/coffees").permitAll()
+                        .requestMatchers("/users/auth/register", "/users/auth/login", "/api/coffees/**").permitAll()
                         .anyRequest().authenticated())
 
                 // JWT Authentication filter

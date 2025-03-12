@@ -9,6 +9,15 @@ public class CoffeeDTO {
     private String name;
     private List<Ingredient> ingredients;
     private String brewingStyle;
+    private String imagePath;
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
 
     // Getters and setters
     public Long getId() {

@@ -53,6 +53,7 @@ public class CoffeeService {
         dto.setId(coffee.getId());
         dto.setName(coffee.getName());
         dto.setBrewingStyle(coffee.getBrewingStyle());
+        dto.setImagePath(coffee.getImagePath());
 
         // Calculate total parts to normalize ratios
         double totalParts = coffee.getEspressoRatio()
@@ -89,6 +90,8 @@ public class CoffeeService {
         Coffee coffee = new Coffee();
         coffee.setName(coffeeDTO.getName());
         coffee.setBrewingStyle(coffeeDTO.getBrewingStyle());
+        coffee.setImagePath(coffeeDTO.getImagePath());
+
 
         int espressoPart = 0, milkPart = 0, foamPart = 0, waterPart = 0;
 
