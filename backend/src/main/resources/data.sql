@@ -1,4 +1,4 @@
-INSERT INTO coffees (name, espresso_ratio, milk_ratio, foam_ratio, water_ratio, brewing_style)
+INSERT INTO coffees (name, espresso_ratio, milk_ratio, foam_ratio, water_ratio, brewing_style, image_path)
 VALUES
   ('Cappuccino', 5, 3, 2, 0, 'Italian', 'Cappuccino.webp'),  -- Espresso 50%, Milk 30%, Foam 20%
   ('Espresso', 10, 0, 0, 0, 'Italian', 'Espresso.webp'),   -- Espresso 100%
