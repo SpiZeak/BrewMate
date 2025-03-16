@@ -19,7 +19,6 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
-
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -31,30 +30,24 @@ public class UserService {
     }
 
     /**
-     * Saves a new user with password encoding (BCrypt) and generates JWT token
+     * Saves a new user with password encoding (BCrypt) WITHOUT generating JWT tokens.
      */
     public Optional<UserDTO> saveUser(User user) {
-
-
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User savedUser = userRepository.save(user);
 
-        String accessToken = jwtUtil.generateAccessToken(savedUser.getEmail());
-        String refreshToken = jwtUtil.generateRefreshToken(savedUser.getEmail());
-
         return Optional.of(new UserDTO(
-                user.getId(),
-                user.getName(),
-                user.getEmail(),
-                accessToken,
-                refreshToken,
-                user.getPassword()
+                savedUser.getId(),
+                savedUser.getName(),
+                savedUser.getEmail(),
+                null,  // No access token at registration
+                null,  // No refresh token at registration
+                savedUser.getPassword()
         ));
     }
 
-
     /**
-     * Authenticates a user and returns JWT token along with user data
+     * Authenticates a user and generates JWT tokens.
      */
     public Optional<UserDTO> authenticateUser(String email, String password) {
         Optional<User> userOptional = userRepository.findByEmail(email);

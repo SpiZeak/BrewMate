@@ -3,6 +3,7 @@ package com.BrewMate.BrewMate.config;
 import com.BrewMate.BrewMate.security.JwtAuthenticationFilter;
 import com.BrewMate.BrewMate.security.JwtUtil;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -32,8 +33,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
         http
-                // CSRF Protection (currently set for testing convenience)
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**", "/users/auth/**"))
+                // Disable CSRF for simplicity (test mode)
+                .csrf(csrf -> csrf.disable())
 
                 // Security Headers
                 .headers(headers -> headers
@@ -42,19 +43,21 @@ public class SecurityConfig {
                         .frameOptions(frame -> frame.deny())
                         .addHeaderWriter(new StaticHeadersWriter("X-Content-Type-Options", "nosniff")))
 
-                // Session management (stateless with JWT)
+                // Session management (stateless JWT)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 // URL Access Rules
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/users/auth/register", "/users/auth/login", "/api/coffees/**").permitAll()
-                        .anyRequest().authenticated())
+                        .requestMatchers("/users/auth/register", "/users/auth/login", "/api/coffees/**").permitAll() // Allow these
+                        .requestMatchers(HttpMethod.GET, "/users").permitAll() // Allow GET /users without auth
+                        .anyRequest().authenticated()) // Other routes require auth
 
                 // JWT Authentication filter
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
+
 
     @Bean
     public AuthenticationManager authenticationManager(
