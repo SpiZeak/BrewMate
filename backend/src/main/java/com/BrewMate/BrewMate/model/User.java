@@ -20,8 +20,6 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-increment ID
     private Long id;
 
-    @Column(unique = true, nullable = true, length = 8) // Unique 8-character identifier (not auto-incremented)
-    private String userId;
 
     @Column(nullable = false)
     private String name;
@@ -36,10 +34,6 @@ public class User {
     @Column(updatable = false, name = "created_at")
     private Date createdAt;
 
-    // assign unique userID
-    public User() {
-        this.userId = generateUniqueUserID();
-    }
 
     public String getPassword() {
         return password;
@@ -58,13 +52,7 @@ public class User {
         this.id = id;
     }
 
-    public String getUserID() {
-        return userId;
-    }
 
-    public void setUserID(String userID) {
-        this.userId = userID;
-    }
 
     public String getName() {
         return name;
@@ -82,8 +70,5 @@ public class User {
         this.email = email;
     }
 
-    public static String generateUniqueUserID() {
-        // Generate full UUID and take first 8 chars
-        return UUID.randomUUID().toString().substring(0, 8);
-    }
+
 }
