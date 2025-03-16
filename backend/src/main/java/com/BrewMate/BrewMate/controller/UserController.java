@@ -59,4 +59,23 @@ public class UserController {
         response.addHeader("Set-Cookie", String.format("%s=%s; Max-Age=%d; Path=%s; HttpOnly; Secure; SameSite=Strict",
                 name, value, expiry, cookie.getPath()));
     }
+
+
+    @PostMapping("/auth/logout")
+    public ResponseEntity<String> logoutUser(HttpServletResponse response) {
+        clearCookie(response, "access_token");
+        clearCookie(response, "refresh_token");
+        return ResponseEntity.ok("Logged out successfully");
+    }
+
+    /** Helper method to clear cookies */
+    private void clearCookie(HttpServletResponse response, String name) {
+        Cookie cookie = new Cookie(name, null);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(0); // Expire immediately
+        response.addHeader("Set-Cookie", String.format("%s=; Max-Age=0; Path=%s; HttpOnly; Secure; SameSite=Strict",
+                name, cookie.getPath()));
+    }
 }

@@ -48,9 +48,9 @@ public class SecurityConfig {
 
                 // URL Access Rules
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/users/auth/register", "/users/auth/login", "/api/coffees/**").permitAll() // Allow these
-                        .requestMatchers(HttpMethod.GET, "/users").permitAll() // Allow GET /users without auth
-                        .anyRequest().authenticated()) // Other routes require auth
+                        .requestMatchers("/users/auth/register", "/users/auth/login", "/users/auth/logout", "/api/coffees/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/users").permitAll()
+                        .anyRequest().authenticated())
 
                 // JWT Authentication filter
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
