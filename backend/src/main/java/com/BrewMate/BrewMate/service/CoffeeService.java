@@ -11,6 +11,7 @@ import com.BrewMate.BrewMate.dto.Ingredient;
 import com.BrewMate.BrewMate.model.Coffee;
 import com.BrewMate.BrewMate.repository.CoffeeRepository;
 
+// Marks this class as a service that Spring will manage
 @Service
 public class CoffeeService {
 
@@ -42,12 +43,12 @@ public class CoffeeService {
         coffeeRepository.deleteById(id);
     }
 
-//    Retrieve coffees filtered by brewing style
+    // Gets all coffees with a specific brewing style
     public List<Coffee> getCoffeesByBrewingStyle(String brewStyle) {
         return coffeeRepository.findByBrewingStyle(brewStyle);
     }
 
-    // Convert Coffee Entity → CoffeeDTO
+    // Turns a Coffee into a CoffeeDTO
     public CoffeeDTO convertToDTO(Coffee coffee) {
         CoffeeDTO dto = new CoffeeDTO();
         dto.setId(coffee.getId());
@@ -55,19 +56,22 @@ public class CoffeeService {
         dto.setBrewingStyle(coffee.getBrewingStyle());
         dto.setImagePath(coffee.getImagePath());
 
-        // Calculate total parts to normalize ratios
+        // Add up all parts to get total
         double totalParts = coffee.getEspressoRatio()
                 + coffee.getMilkRatio()
                 + coffee.getFoamRatio()
                 + coffee.getWaterRatio();
 
+        // If there are no parts, return empty ingredients
         if (totalParts == 0) {
-            dto.setIngredients(List.of()); // Avoid division by zero
+            dto.setIngredients(List.of());
             return dto;
         }
 
+        // Create a list to hold ingredients
         List<Ingredient> ingredients = new ArrayList<>();
 
+        // Add each ingredient if it exists
         if (coffee.getEspressoRatio() > 0) {
             ingredients.add(new Ingredient("espresso", coffee.getEspressoRatio() / totalParts));
         }
@@ -81,33 +85,36 @@ public class CoffeeService {
             ingredients.add(new Ingredient("water", coffee.getWaterRatio() / totalParts));
         }
 
+        // Set ingredients to the DTO
         dto.setIngredients(ingredients);
         return dto;
     }
 
-    // Convert CoffeeDTO → Coffee Entity
+    // Turns a CoffeeDTO into a Coffee
     public Coffee convertDTOToEntity(CoffeeDTO coffeeDTO) {
         Coffee coffee = new Coffee();
         coffee.setName(coffeeDTO.getName());
         coffee.setBrewingStyle(coffeeDTO.getBrewingStyle());
         coffee.setImagePath(coffeeDTO.getImagePath());
 
-
+        // Set up variables to store each ingredient amount
         int espressoPart = 0, milkPart = 0, foamPart = 0, waterPart = 0;
 
+        // Look at each ingredient to get its amount
         for (Ingredient ing : coffeeDTO.getIngredients()) {
             switch (ing.getName().toLowerCase()) {
                 case "espresso" ->
-                    espressoPart = (int) (ing.getRatio() * 100);
+                        espressoPart = (int) (ing.getRatio() * 100);
                 case "milk" ->
-                    milkPart = (int) (ing.getRatio() * 100);
+                        milkPart = (int) (ing.getRatio() * 100);
                 case "foam" ->
-                    foamPart = (int) (ing.getRatio() * 100);
+                        foamPart = (int) (ing.getRatio() * 100);
                 case "water" ->
-                    waterPart = (int) (ing.getRatio() * 100);
+                        waterPart = (int) (ing.getRatio() * 100);
             }
         }
 
+        // Set all the ingredient ratios in the Coffee
         coffee.setEspressoRatio(espressoPart);
         coffee.setMilkRatio(milkPart);
         coffee.setFoamRatio(foamPart);
