@@ -6,8 +6,7 @@ import { Link } from 'react-router';
 import Typography from '@mui/material/Typography';
 import { useDispatch } from 'react-redux';
 import { setUser, UserState } from '@features/user/userSlice';
-
-const { VITE_BACKEND_URL } = import.meta.env;
+import { API_URL } from '@app/constants';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -17,14 +16,28 @@ const Login = () => {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    const formData = new FormData(e.currentTarget);
-    const response = await fetch(`${VITE_BACKEND_URL}/users/auth/login`, {
-      method: 'POST',
-      body: formData,
-    });
-    const data: UserState = (await response.json()) as UserState;
+    const userData = {
+      email,
+      password,
+    };
+    try {
+      const response = await fetch(`${API_URL}/users/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+        credentials: 'include',
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data: UserState = (await response.json()) as UserState;
 
-    dispatch(setUser(data));
+      dispatch(setUser(data));
+    } catch (error) {
+      console.error('Error during login:', error);
+    }
   }
 
   return (

@@ -1,7 +1,6 @@
 import { Box, Button, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
-
-const { VITE_BACKEND_URL } = import.meta.env;
+import { API_URL } from '@app/constants';
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -17,12 +16,13 @@ const Register = () => {
       password,
     };
     try {
-      const response = await fetch(`${VITE_BACKEND_URL}/users/auth/register`, {
+      const response = await fetch(`${API_URL}/users/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(userData),
+        credentials: 'include',
       });
 
       if (!response.ok) {
