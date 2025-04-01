@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { Link } from 'react-router';
 import Typography from '@mui/material/Typography';
 import { useDispatch } from 'react-redux';
-import { setUser, UserState } from '@features/user/userSlice';
+import { setUser } from '@features/user/userSlice';
 import { API_URL } from '@app/constants';
 
 const Login = () => {
