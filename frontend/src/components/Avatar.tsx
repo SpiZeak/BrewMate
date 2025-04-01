@@ -1,9 +1,9 @@
-import { selectUsername } from '@features/user/userSlice';
+import { selectEmail } from '@features/user/userSlice';
 import MuiAvatar, { AvatarOwnProps } from '@mui/material/Avatar';
 import { useSelector } from 'react-redux';
 
 const Avatar = (props: AvatarOwnProps) => {
-  const username = useSelector(selectUsername) ?? '';
+  const username = useSelector(selectEmail) ?? '';
 
   function stringToColor(string: string) {
     let hash = 0;

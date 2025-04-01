@@ -29,12 +29,12 @@ const Login = () => {
         body: JSON.stringify(userData),
         credentials: 'include',
       });
+
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-      const data: UserState = (await response.json()) as UserState;
 
-      dispatch(setUser(data));
+      dispatch(setUser({ email }));
     } catch (error) {
       console.error('Error during login:', error);
     }

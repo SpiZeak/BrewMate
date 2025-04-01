@@ -3,12 +3,12 @@ import type { RootState } from '../../app/store';
 
 interface UserState {
   token: string;
-  username?: string;
+  email?: string;
 }
 
 const initialState: UserState = {
   token: '',
-  username: '',
+  email: '',
 };
 
 export const userSlice = createSlice({
@@ -26,6 +26,6 @@ export const userSlice = createSlice({
 export const { setUser, clearUser } = userSlice.actions;
 export const selectToken = (state: RootState) => state.user.token;
 export const selectIsAuthenticated = (state: RootState) => !!state.user.token;
-export const selectUsername = (state: RootState) => state.user.username;
+export const selectEmail = (state: RootState) => state.user.email;
 export default userSlice.reducer;
 export type { UserState };
