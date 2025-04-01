@@ -7,13 +7,10 @@ import Paper from '@mui/material/Paper';
 import { useLocation, useNavigate } from 'react-router';
 import Avatar from './Avatar';
 import { useSelector } from 'react-redux';
-import {
-  selectIsAuthenticated,
-  selectUsername,
-} from '@features/user/userSlice';
+import { selectIsAuthenticated, selectEmail } from '@features/user/userSlice';
 
 const BottomNavigation = () => {
-  const username = useSelector(selectUsername);
+  const username = useSelector(selectEmail);
   const navigate = useNavigate();
   const location = useLocation();
   const [value, setValue] = useState(location.pathname);

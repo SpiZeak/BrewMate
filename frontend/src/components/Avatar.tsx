@@ -1,9 +1,9 @@
-import { selectUsername } from '@features/user/userSlice';
+import { selectEmail } from '@features/user/userSlice';
 import MuiAvatar, { AvatarOwnProps } from '@mui/material/Avatar';
 import { useSelector } from 'react-redux';
 
 const Avatar = (props: AvatarOwnProps) => {
-  const username = useSelector(selectUsername);
+  const username = useSelector(selectEmail) ?? '';
 
   function stringToColor(string: string) {
     let hash = 0;
@@ -28,17 +28,6 @@ const Avatar = (props: AvatarOwnProps) => {
     return `#${r.toString(16).padStart(2, '0')}${g
       .toString(16)
       .padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
-  }
-
-  function stringAvatar(name: string) {
-    return {
-      sx: {
-        bgcolor: stringToColor(name),
-        width: 24,
-        height: 24,
-      },
-      children: initials.toUpperCase(),
-    };
   }
 
   const overrideProps = {
