@@ -7,6 +7,8 @@ import Typography from '@mui/material/Typography';
 import { useDispatch } from 'react-redux';
 import { setUser, UserState } from '@features/user/userSlice';
 
+const { VITE_BACKEND_URL } = import.meta.env;
+
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -14,12 +16,12 @@ const Login = () => {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+
     const formData = new FormData(e.currentTarget);
-    const response = await fetch('/login.json', {
+    const response = await fetch(`${VITE_BACKEND_URL}/users/auth/login`, {
       method: 'POST',
       body: formData,
     });
-
     const data: UserState = (await response.json()) as UserState;
 
     dispatch(setUser(data));
@@ -55,7 +57,7 @@ const Login = () => {
       <Button type='submit' variant='contained' disabled={!email || !password}>
         Submit
       </Button>
-      <Typography>No account? Register here</Typography>
+      <Typography>No account?</Typography>
       <Link to='/auth/register'>
         <Button type='submit' variant='contained'>
           Register
