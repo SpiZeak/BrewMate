@@ -16,20 +16,24 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.header.writers.StaticHeadersWriter;
 
+// Marks this class as a configuration class
 @Configuration
+// Enables Spring Security's web security support
 @EnableWebSecurity
 public class SecurityConfig {
+    // Creates our JWT authentication filter
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter(JwtUtil jwtUtil) {
         return new JwtAuthenticationFilter(jwtUtil);
     }
 
-
+    // Creates a password encoder for secure password storage
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    // Configures security rules for our application
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
         http
@@ -38,9 +42,13 @@ public class SecurityConfig {
 
                 // Security Headers
                 .headers(headers -> headers
+                        // Prevents XSS attacks by controlling what scripts can run
                         .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'; script-src 'self'"))
+                        // Additional XSS protection
                         .addHeaderWriter(new StaticHeadersWriter("X-XSS-Protection", "1; mode=block"))
+                        // Prevents clickjacking attacks by disallowing frames
                         .frameOptions(frame -> frame.deny())
+                        // Prevents MIME type sniffing attacks
                         .addHeaderWriter(new StaticHeadersWriter("X-Content-Type-Options", "nosniff")))
 
                 // Session management (stateless JWT)
@@ -48,8 +56,11 @@ public class SecurityConfig {
 
                 // URL Access Rules
                 .authorizeHttpRequests(auth -> auth
+                        // Public endpoints that don't require login
                         .requestMatchers("/users/auth/register", "/users/auth/login", "/users/auth/logout", "/api/coffees/**").permitAll()
+                        // Everyone can get user list
                         .requestMatchers(HttpMethod.GET, "/users").permitAll()
+                        // All other requests need authentication
                         .anyRequest().authenticated())
 
                 // JWT Authentication filter
@@ -58,7 +69,7 @@ public class SecurityConfig {
         return http.build();
     }
 
-
+    // Creates an authentication manager
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration authenticationConfiguration) throws Exception {

@@ -13,51 +13,47 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Collections;
 
-/**
- * This filter runs before each request and checks if a valid JWT is provided.
- */
+// This checks if the user's login token is valid for each request
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+    // Helper class for working with JWT tokens
     private final JwtUtil jwtUtil;
 
+    // Constructor - sets up the JWT helper
     @Autowired
     public JwtAuthenticationFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
     }
 
-
+    // This runs for every web request
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        // Extract access token from cookies
+        // Get the token from cookies
         String token = jwtUtil.getTokenFromRequest(request, "access_token");
 
-        // If token is valid, authenticate the user
+        // If we have a valid token
         if (token != null && jwtUtil.isTokenValid(token, false)) {
             try {
+                // Get the user's email from the token
                 String email = jwtUtil.extractEmail(token, false);
+
+                // Create an authentication object for Spring Security
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(email, null, Collections.emptyList());
+
+                // Tell Spring the user is logged in
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+
             } catch (JwtException e) {
+                // If token is broken, tell user they're not authorized
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             }
         }
 
-        // Continue processing the request
+        // Move to the next step in processing the request
         filterChain.doFilter(request, response);
     }
 }
-
-
-/*The cookie validation happens in the `JwtAuthenticationFilter` which:
-        1. Extracts the access token from the cookies
-        2. Validates the token using `JwtUtil.isTokenValid()`
-        3. If valid, creates an authentication token and sets it in the security context
-        4. If invalid, returns a 401 Unauthorized response
-
-This filter extends `OncePerRequestFilter`, meaning it runs before every request to validate the JWT cookie. This is a security best practice as it ensures that every protected endpoint is properly authenticated.
-So while the `UserController` handles setting the cookies during login, the actual validation of those cookies happens automatically through Spring Security's filter chain via the `JwtAuthenticationFilter`.
-        */
