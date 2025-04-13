@@ -11,6 +11,8 @@ const Register = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    setLoading(true);
+
     const userData = {
       name,
       email,
@@ -33,6 +35,7 @@ const Register = () => {
       const data = await response.json();
       console.log('User registered successfully:', data);
     } catch (error) {
+      setLoading(false);
       console.error('Error during registration:', error);
     }
   };
@@ -70,7 +73,12 @@ const Register = () => {
         onChange={e => setPassword(e.target.value)}
         name='password'
       />
-      <Button type='submit' variant='contained' disabled={!email || !password}>
+      <Button
+        type='submit'
+        variant='contained'
+        disabled={!email || !password}
+        loading={loading}
+      >
         Submit
       </Button>
     </Box>

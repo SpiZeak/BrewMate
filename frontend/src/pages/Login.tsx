@@ -52,6 +52,9 @@ const Login = () => {
       }}
       className='flex flex-col w-full max-w-sm mx-auto mt-8 p-4 shadow-md rounded space-y-4'
     >
+      <Typography variant='h4' className='text-center'>
+        Login
+      </Typography>
       <TextField
         type='email'
         label='Email'
